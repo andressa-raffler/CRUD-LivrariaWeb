@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="LivrariaWeb:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>LivrariaWeb</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="LivrariaWeb-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="LivrariaWeb:war exploded" />
+    </root>
+  </artifact>
+</component>
