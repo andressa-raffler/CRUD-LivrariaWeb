@@ -1,21 +1,32 @@
 package br.com.letscode.livrariaweb.model;
 
+import lombok.Data;
+
+import java.util.Objects;
+
+@Data
 public class Livro {
 
-    public Livro(String nome, String autor) {
+    private Long id;
+    private String nome;
+    private String autor;
+
+    public Livro(String id, String nome, String autor) {
+        this.id = Long.parseLong(id);
         this.nome = nome;
         this.autor = autor;
     }
 
-    private String nome;
-    private String autor;
-
-    public String getNome() {
-        return nome;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Livro livro = (Livro) o;
+        return Objects.equals(id, livro.id);
     }
 
-    public String getAutor() {
-        return autor;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nome, autor);
     }
-
 }
