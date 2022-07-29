@@ -39,7 +39,7 @@ public class LivrariaDAOImpl implements LivrariaDAOI {
     @Override
     public Optional<Livro> getById(String id) {
         for (Livro livroJaCadastrado : bancoLivros){
-            if(livroJaCadastrado.getId().equals(Long.parseLong(id))){
+            if(livroJaCadastrado.getId().equals(Long.valueOf(id))){
                 return Optional.of(livroJaCadastrado);
             }
         }

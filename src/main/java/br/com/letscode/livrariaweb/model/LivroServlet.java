@@ -10,10 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 
-@WebServlet(value = "/livro-servlet")
+@WebServlet(value = "/livro-servlet/*")
 public class LivroServlet extends HttpServlet {
 
     LivrariaBusinessObjectI livrariaBussinessObjectI;
@@ -33,26 +34,29 @@ public class LivroServlet extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Iniciando o metodo service");
-        criarNovoLivro(request);
+        System.out.println("-------------Iniciando o metodo service");
+       // criarNovoLivro(request); //MOVER PARA DENTRO DOS METODOS DO SWITCH
 
-        String caminho = request.getPathInfo();
+        String caminho = request.getPathInfo(); //Pega a ulima parte da URL apos a /
 
         switch (caminho) {
             case "/cadastrar-livros": //C
                 doPost(request, response);
                 break;
-            case "/listar-livros": //R
-                doGet(request, response);
+            case "/carregar-para-edicao": //R
+                carregarParaEdicao(request, response);
                 break;
             case "/editar-livro": //U
                 doPut(request, response);
                 break;
-            case "/deletar-livro": //D
+            case "/deletar": //D
                 doDelete(request, response);
                 break;
+            case "/listar-livros":
+                carregarBanco(request,response);
+                break;
             default:
-                service(request, response);
+                super.service(request, response);
         }
     }
 
@@ -63,6 +67,7 @@ public class LivroServlet extends HttpServlet {
         Livro livro = criarNovoLivro(request);
         livrariaBussinessObjectI.save(livro);
         List<Livro> livros = livrariaBussinessObjectI.findAll();
+        Collections.reverse(livros);
         request.setAttribute("livros", livros);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/listar-livros.jsp");
         dispatcher.forward(request,response);
@@ -79,6 +84,7 @@ public class LivroServlet extends HttpServlet {
 
         request.setAttribute("idLivroAlterado", livroAlterado.getId());
         List<Livro> livros = livrariaBussinessObjectI.findAll();
+
         request.setAttribute("livros", livros);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/listar-livros.jsp");
         dispatcher.forward(request,response);
@@ -88,6 +94,8 @@ public class LivroServlet extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getParameter("id");
         livrariaBussinessObjectI.delete(id);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/listar-livros.jsp");
+        dispatcher.forward(request,response);
     }
 
     @Override
@@ -101,11 +109,17 @@ public class LivroServlet extends HttpServlet {
         return new Livro(id, nome, autor);
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void carregarParaEdicao(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String idLivro = request.getParameter("id");
         Livro livro = livrariaBussinessObjectI.getById(idLivro);
         request.setAttribute("livro", livro);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/editar-livro.jsp");
+        dispatcher.forward(request,response);
+    }
+
+    protected void carregarBanco(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Livro> livros = livrariaBussinessObjectI.findAll();
+        request.setAttribute("livros",livros);
         RequestDispatcher dispatcher = request.getRequestDispatcher("/listar-livros.jsp");
         dispatcher.forward(request,response);
     }

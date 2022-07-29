@@ -12,24 +12,40 @@
     <title>Lista de livros</title>
 </head>
 <body>
-<form action="livro-servlet/editar-livro" method="get">
+
+
 <h1>Livros cadastrados</h1>
+
+    <c:if test="${idLivroSalvo != null}">
+        <h3>Livro de id: ${idLivroSalvo} , cadastrado com sucesso!</h3>
+    </c:if>
+    <c:if test="${idLivroAlterado != null}">
+        <h3>Livro de id: ${idLivroSalvo} , alterado com sucesso!</h3>
+    </c:if>
 
 <table border="solid">
     <tr>
         <th>ID</th>
         <th>Nome</th>
         <th>Autor</th>
+        <th>Editar</th>
+        <th>Deletar</th>
     </tr>
     <c:forEach var="livro" items="${livros}" varStatus="id">
         <tr>
             <td>${livro.id}</td>
             <td>${livro.nome}</td>
             <td>${livro.autor}</td>
+            <td>
+                <a href="${pageContext.request.contextPath}/livro-servlet/carregar-para-edicao?id=<c:out value='${livro.id}' />">Edit</a>
+            </td>
+            <td>
+                <a href="${pageContext.request.contextPath}/livro-servlet/deletar?id=<c:out value='${livro.id}' />">Delete</a>
+            </td>
         </tr>
     </c:forEach>
 </table>
-<a href="index.jsp">Voltar ao menu iniciar</a>
-</form>
+<a href="${pageContext.request.contextPath}/index.jsp">Voltar ao menu iniciar</a>
+
 </body>
 </html>
